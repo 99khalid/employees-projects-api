@@ -16,7 +16,7 @@ namespace Application.Features.Projects.Commands.UpdateProject
 
             if (project == null)
             {
-                throw new Exception("Project not found."); // يمكنك تخصيص استثناء أفضل حسب الحاجة
+                throw new KeyNotFoundException($"Project with ID {request.ProjectID} not found.");
             }
 
             // تحديث الخصائص المطلوبة
@@ -25,8 +25,8 @@ namespace Application.Features.Projects.Commands.UpdateProject
             project.StartDate = request.StartDate;
             project.EndDate = request.EndDate;
 
-            await _unitOfWork.Projects.UpdateAsync(project);
-            await _unitOfWork.CommitAsync(); // استخدم DbContext لحفظ التغييرات
+            _unitOfWork.Projects.Update(project);
+            await _unitOfWork.CommitAsync(cancellationToken); // استخدم DbContext لحفظ التغييرات
 
             return Unit.Value; // إرجاع وحدة القيمة لتشير إلى النجاح
         }

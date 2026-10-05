@@ -1,7 +1,7 @@
 
 namespace Application.Features.Projects.Commands.CreateProject
 {
-    public class CreateProjectHandler : IRequestHandler<CreateProjectRequest, Unit>
+    public class CreateProjectHandler : IRequestHandler<CreateProjectRequest, Guid>
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -10,7 +10,7 @@ namespace Application.Features.Projects.Commands.CreateProject
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Unit> Handle(CreateProjectRequest request, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(CreateProjectRequest request, CancellationToken cancellationToken)
         {
             var newProject = new Project
             {
@@ -21,9 +21,9 @@ namespace Application.Features.Projects.Commands.CreateProject
             };
 
             await _unitOfWork.Projects.AddAsync(newProject);
-            await _unitOfWork.CommitAsync(); // استخدم DbContext لحفظ التغييرات
+            await _unitOfWork.CommitAsync(cancellationToken); // استخدم DbContext لحفظ التغييرات
 
-            return Unit.Value; // إرجاع وحدة القيمة لتشير إلى النجاح
+            return newProject.ProjectID;
         }
 
     }

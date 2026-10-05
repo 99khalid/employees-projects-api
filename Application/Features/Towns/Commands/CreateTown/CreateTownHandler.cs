@@ -1,7 +1,7 @@
 
 namespace Application.Features.Towns.Commands.CreateTown
 {
-    public class CreateTownHandler : IRequestHandler<CreateTownRequest, Unit>
+    public class CreateTownHandler : IRequestHandler<CreateTownRequest, Guid>
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -10,7 +10,7 @@ namespace Application.Features.Towns.Commands.CreateTown
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Unit> Handle(CreateTownRequest request, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(CreateTownRequest request, CancellationToken cancellationToken)
         {
             var newTown = new Town
             {
@@ -19,9 +19,9 @@ namespace Application.Features.Towns.Commands.CreateTown
             };
 
             await _unitOfWork.Towns.AddAsync(newTown);
-            await _unitOfWork.CommitAsync(); // استخدم DbContext لحفظ التغييرات
+            await _unitOfWork.CommitAsync(cancellationToken); // استخدم DbContext لحفظ التغييرات
 
-            return Unit.Value; // إرجاع وحدة القيمة لتشير إلى النجاح
+            return newTown.TownID;
         }
     }
 }

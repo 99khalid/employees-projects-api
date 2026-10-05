@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastru
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{C0894635-97C8-41B8-ACFD-F60C4D116B4B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{CFE6E1F9-3898-41E3-980C-43C5F2881DE3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FciLuxor.Tests", "Tests\FciLuxor.Tests\FciLuxor.Tests.csproj", "{BBC37537-117B-416F-86E7-CC967CF49E58}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +40,12 @@ Global
 		{C0894635-97C8-41B8-ACFD-F60C4D116B4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0894635-97C8-41B8-ACFD-F60C4D116B4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0894635-97C8-41B8-ACFD-F60C4D116B4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBC37537-117B-416F-86E7-CC967CF49E58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBC37537-117B-416F-86E7-CC967CF49E58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBC37537-117B-416F-86E7-CC967CF49E58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBC37537-117B-416F-86E7-CC967CF49E58}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BBC37537-117B-416F-86E7-CC967CF49E58} = {CFE6E1F9-3898-41E3-980C-43C5F2881DE3}
 	EndGlobalSection
 EndGlobal

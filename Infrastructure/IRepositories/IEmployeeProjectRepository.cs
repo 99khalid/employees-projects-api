@@ -1,6 +1,6 @@
 namespace Infrastructure.IRepositories
 {
-    public interface IEmployeeProjectRepository : IGenericRepository<Project>
+    public interface IEmployeeProjectRepository : IGenericRepository<EmployeesProjects>
     {
     }
 }

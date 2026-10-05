@@ -1,7 +1,7 @@
 
 namespace Application.Features.Projects.Commands.CreateProject
 {
-    public class CreateProjectRequest : IRequest<Unit>
+    public class CreateProjectRequest : IRequest<Guid>
     {
         public string Name { get; set; }
         public string Description { get; set; }

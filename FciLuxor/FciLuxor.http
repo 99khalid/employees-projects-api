@@ -1,6 +1,19 @@
 @FciLuxor_HostAddress = http://localhost:5260
 
-GET {{FciLuxor_HostAddress}}/weatherforecast/
-Accept: application/json
+### Create a town
+POST {{FciLuxor_HostAddress}}/api/towns
+Content-Type: application/json
 
-###
+{ "name": "Luxor" }
+
+### List towns
+GET {{FciLuxor_HostAddress}}/api/towns
+
+### Create a project
+POST {{FciLuxor_HostAddress}}/api/projects
+Content-Type: application/json
+
+{ "name": "HR Portal", "description": "Internal HR system", "startDate": "2024-10-01" }
+
+### List projects
+GET {{FciLuxor_HostAddress}}/api/projects

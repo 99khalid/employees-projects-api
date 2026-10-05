@@ -1,7 +1,3 @@
-using Infrastructure.DbContexts;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-
 namespace FciLuxor.Controllers
 {
     [ApiController]
@@ -9,63 +5,33 @@ namespace FciLuxor.Controllers
     public class TownsController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly EmployeesDbContext _employeesDbContext; // إضافة DbContext
 
-        public TownsController(IMediator mediator, EmployeesDbContext employeesDbContext)
+        public TownsController(IMediator mediator)
         {
-            _mediator = mediator; // استخدام Mediator
-            _employeesDbContext = employeesDbContext; // تمرير DbContext
+            _mediator = mediator;
         }
 
-        // نقطة النهاية لاختبار الوصول إلى DbContext
-        [HttpGet("test-db")]
-        public IActionResult TestDatabaseConnection()
-        {
-            try
-            {
-                var towns = _employeesDbContext.Set<Town>().ToList(); // استرجاع جميع المدن
-                return Ok(towns); // إرجاع قائمة المدن
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}"); // إرجاع خطأ 500 في حالة حدوث استثناء
-            }
-        }
-
-        // Create Town
         [HttpPost]
         public async Task<IActionResult> CreateTown([FromBody] CreateTownRequest request)
         {
-            var result = await _mediator.Send(request);
-            return Ok(result);
+            var id = await _mediator.Send(request);
+            return CreatedAtAction(nameof(GetTownById), new { id }, new { id });
         }
 
-        // Get Town by ID
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTownById(Guid id)
         {
             var result = await _mediator.Send(new GetTownByIdRequest { TownID = id });
-            return Ok(result);
+            return result == null ? NotFound() : Ok(result);
         }
 
-        // Get All Towns
         [HttpGet]
         public async Task<IActionResult> GetAllTowns()
         {
-            try
-            {
-                var result = await _mediator.Send(new GetAllTownsRequest());
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                // يمكنك استخدام ILogger لتسجيل الخطأ
-                // Log.Error(ex, "An error occurred while fetching all towns.");
-                return StatusCode(500, $"Controller Internal server error: {ex.Message}");
-            }
+            var result = await _mediator.Send(new GetAllTownsRequest());
+            return Ok(result);
         }
 
-        // Update Town
         [HttpPut]
         public async Task<IActionResult> UpdateTown([FromBody] UpdateTownRequest request)
         {
@@ -73,7 +39,6 @@ namespace FciLuxor.Controllers
             return NoContent();
         }
 
-        // Delete Town
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTown(Guid id)
         {

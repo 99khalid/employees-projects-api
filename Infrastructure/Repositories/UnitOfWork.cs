@@ -1,37 +1,35 @@
-
-
 namespace Infrastructure.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly EmployeesDbContext _employeesDbContext;
+        private readonly ProjectsDbContext _projectsDbContext;
 
-        public IAddressRepository Addresses { get; private set; }
-        public ITownRepository Towns { get; private set; }
-        public IProjectRepository Projects { get; private set; }
-        public IEmployeeProjectRepository employeeProject { get; private set; }
+        public IAddressRepository Addresses { get; }
+        public ITownRepository Towns { get; }
+        public IProjectRepository Projects { get; }
+        public IEmployeeProjectRepository EmployeeProjects { get; }
 
-        public UnitOfWork(ApplicationDbContext dbContext, 
+        public UnitOfWork(EmployeesDbContext employeesDbContext,
+                          ProjectsDbContext projectsDbContext,
                           IAddressRepository addressRepository,
                           ITownRepository townRepository,
                           IProjectRepository projectRepository,
                           IEmployeeProjectRepository employeeProjectRepository)
         {
-            _dbContext = dbContext;
+            _employeesDbContext = employeesDbContext;
+            _projectsDbContext = projectsDbContext;
             Addresses = addressRepository;
             Towns = townRepository;
             Projects = projectRepository;
-            employeeProject=employeeProjectRepository;
+            EmployeeProjects = employeeProjectRepository;
         }
 
-        public async Task<int> CommitAsync()
+        public async Task<int> CommitAsync(CancellationToken cancellationToken = default)
         {
-            return await _dbContext.SaveChangesAsync(); // حفظ جميع التغييرات
-        }
-
-        public void Dispose()
-        {
-            _dbContext.Dispose(); // تحرير الموارد
+            var saved = await _employeesDbContext.SaveChangesAsync(cancellationToken);
+            saved += await _projectsDbContext.SaveChangesAsync(cancellationToken);
+            return saved;
         }
     }
 }

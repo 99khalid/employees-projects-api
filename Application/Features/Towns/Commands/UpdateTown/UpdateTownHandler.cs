@@ -16,14 +16,14 @@ namespace Application.Features.Towns.Commands.UpdateTown
 
             if (town == null)
             {
-                throw new Exception("Town not found."); // يمكنك تخصيص استثناء أفضل حسب الحاجة
+                throw new KeyNotFoundException($"Town with ID {request.TownID} not found.");
             }
 
             // تحديث الخصائص المطلوبة
             town.Name = request.Name; // افترض أن لديك خاصية اسمية
 
-            await _unitOfWork.Towns.UpdateAsync(town);
-            await _unitOfWork.CommitAsync(); // استخدم DbContext لحفظ التغييرات
+            _unitOfWork.Towns.Update(town);
+            await _unitOfWork.CommitAsync(cancellationToken); // استخدم DbContext لحفظ التغييرات
 
             return Unit.Value; // إرجاع وحدة القيمة لتشير إلى النجاح
         }

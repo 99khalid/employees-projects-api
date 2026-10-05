@@ -1,7 +1,7 @@
 
 namespace Application.Features.Addresses.Commands.CreateAddress
 {
-    public class CreateAddressHandler : IRequestHandler<CreateAddressRequest, Unit>
+    public class CreateAddressHandler : IRequestHandler<CreateAddressRequest, Guid>
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -10,7 +10,7 @@ namespace Application.Features.Addresses.Commands.CreateAddress
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Unit> Handle(CreateAddressRequest request, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(CreateAddressRequest request, CancellationToken cancellationToken)
         {
              // التحقق من أن TownID يشير إلى مدينة موجودة
             if (request.TownID.HasValue)
@@ -28,9 +28,9 @@ namespace Application.Features.Addresses.Commands.CreateAddress
             };
 
             await _unitOfWork.Addresses.AddAsync(newAddress);
-            await _unitOfWork.CommitAsync(); //   لحفظ التغييرات
+            await _unitOfWork.CommitAsync(cancellationToken); //   لحفظ التغييرات
 
-            return Unit.Value; // إرجاع وحدة القيمة لتشير إلى النجاح
+            return newAddress.AddressID;
         }
 
        

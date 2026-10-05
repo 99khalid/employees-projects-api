@@ -1,11 +1,13 @@
 namespace Infrastructure.IRepositories
 {
-    public interface IUnitOfWork : IDisposable
+    public interface IUnitOfWork
     {
         IAddressRepository Addresses { get; }
         ITownRepository Towns { get; }
         IProjectRepository Projects { get; }
-        IEmployeeProjectRepository employeeProject { get; }
-        Task<int> CommitAsync(); // لحفظ جميع التغييرات في جلسة واحدة
+        IEmployeeProjectRepository EmployeeProjects { get; }
+
+        // Saves the pending changes of both databases.
+        Task<int> CommitAsync(CancellationToken cancellationToken = default);
     }
 }

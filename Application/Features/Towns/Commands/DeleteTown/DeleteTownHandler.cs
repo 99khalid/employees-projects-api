@@ -1,5 +1,3 @@
-
-
 namespace Application.Features.Towns.Commands.DeleteTown
 {
     public class DeleteTownHandler : IRequestHandler<DeleteTownRequest, Unit>
@@ -18,17 +16,16 @@ namespace Application.Features.Towns.Commands.DeleteTown
             {
                 throw new KeyNotFoundException($"Town with ID {request.TownID} not found.");
             }
-            // تحقق مما إذا كانت المدينة مرتبطة بعناوين
+
+            // A town that still has addresses can't be deleted.
             var addresses = await _unitOfWork.Addresses.GetAllAsync(a => a.TownID == request.TownID);
             if (addresses.Any())
             {
                 throw new InvalidOperationException($"Cannot delete town with ID {request.TownID} because it has associated addresses.");
             }
 
-            
-            await _unitOfWork.Towns.DeleteAsync(town.TownID);
-            await _unitOfWork.CommitAsync(); // استخدم DbContext لحفظ التغييرات
-           
+            _unitOfWork.Towns.Delete(town);
+            await _unitOfWork.CommitAsync(cancellationToken);
 
             return Unit.Value;
         }

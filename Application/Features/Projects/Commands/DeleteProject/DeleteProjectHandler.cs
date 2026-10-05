@@ -17,18 +17,15 @@ namespace Application.Features.Projects.Commands.DeleteProject
                 throw new KeyNotFoundException($"Project with ID {request.ProjectID} not found.");
             }
 
-            // تحقق مما إذا كانت المدينة مرتبطة بعناوين
-            var employeesProjects = await _unitOfWork.employeeProject.GetAllAsync(em => em.ProjectID == request.ProjectID);
+            // A project that still has employees assigned can't be deleted.
+            var employeesProjects = await _unitOfWork.EmployeeProjects.GetAllAsync(ep => ep.ProjectID == request.ProjectID);
             if (employeesProjects.Any())
             {
-                throw new InvalidOperationException($"Cannot delete Project with ID {request.ProjectID} because it has associated employeesProjects.");
+                throw new InvalidOperationException($"Cannot delete project with ID {request.ProjectID} because it has employees assigned.");
             }
 
-            // حذف المشروع
-            await _unitOfWork.Projects.DeleteAsync(project.ProjectID);
-
-            // حفظ جميع التغييرات باستخدام UnitOfWork
-            await _unitOfWork.CommitAsync();
+            _unitOfWork.Projects.Delete(project);
+            await _unitOfWork.CommitAsync(cancellationToken);
 
             return Unit.Value;
         }

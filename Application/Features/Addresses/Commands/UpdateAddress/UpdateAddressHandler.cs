@@ -16,7 +16,7 @@ namespace Application.Features.Addresses.Commands.UpdateAddress
 
             if (Address == null)
             {
-                throw new Exception("Address not found."); // يمكنك تخصيص استثناء أفضل حسب الحاجة
+                throw new KeyNotFoundException($"Address with ID {request.AddressID} not found.");
             }
 
             // التحقق من أن TownID يشير إلى مدينة موجودة
@@ -34,8 +34,8 @@ namespace Application.Features.Addresses.Commands.UpdateAddress
              Address.AddressText=request.AddressText;
              Address.TownID=request.TownID;
 
-            await _unitOfWork.Addresses.UpdateAsync(Address);
-            await _unitOfWork.CommitAsync(); // استخدم DbContext لحفظ التغييرات
+            _unitOfWork.Addresses.Update(Address);
+            await _unitOfWork.CommitAsync(cancellationToken); // استخدم DbContext لحفظ التغييرات
 
             return Unit.Value; // إرجاع وحدة القيمة لتشير إلى النجاح
         }

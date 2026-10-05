@@ -1,35 +1,28 @@
-
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Infrastructure.IRepositories;
-using Infrastructure.DbContexts;
+using System.Linq.Expressions;
 
 namespace Infrastructure.Repositories
 {
+    // Changes are only tracked here; IUnitOfWork.CommitAsync saves them.
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        private readonly ApplicationDbContext _dbContext;
         private readonly DbSet<T> _dbSet;
 
         public GenericRepository(ApplicationDbContext dbContext)
         {
-            _dbContext = dbContext;
             _dbSet = dbContext.Set<T>();
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()
         {
-             return await _dbSet.ToListAsync();
-            
+            return await _dbSet.AsNoTracking().ToListAsync();
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync(Func<T, bool> predicate)
+        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> predicate)
         {
-            return await Task.FromResult(_dbSet.Where(predicate).ToList());
+            return await _dbSet.AsNoTracking().Where(predicate).ToListAsync();
         }
-        public async Task<T> GetByIdAsync(Guid id)
+
+        public async Task<T?> GetByIdAsync(Guid id)
         {
             return await _dbSet.FindAsync(id);
         }
@@ -37,23 +30,16 @@ namespace Infrastructure.Repositories
         public async Task AddAsync(T entity)
         {
             await _dbSet.AddAsync(entity);
-            await _dbContext.SaveChangesAsync(); // استخدم SaveChangesAsync المعدلة
         }
 
-        public async Task UpdateAsync(T entity)
+        public void Update(T entity)
         {
             _dbSet.Update(entity);
-            await _dbContext.SaveChangesAsync(); // استخدم SaveChangesAsync المعدلة
         }
 
-        public async Task DeleteAsync(Guid id)
+        public void Delete(T entity)
         {
-            var entity = await _dbSet.FindAsync(id);
-            if (entity != null)
-            {
-                _dbSet.Remove(entity);
-                await _dbContext.SaveChangesAsync(); // استخدم SaveChangesAsync المعدلة
-            }
+            _dbSet.Remove(entity);
         }
     }
 }
