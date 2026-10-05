@@ -64,4 +64,4 @@ The tests use the EF Core in-memory provider, so no SQL Server is needed.
 
 ## Authors
 
-Built together by [@yahya511](https://github.com/yahya511) and [Khalid Hassan](https://github.com/99khalid) (FCI, 2024).
+Built by [Khalid Hassan](https://github.com/99khalid) (FCI, 2021).
